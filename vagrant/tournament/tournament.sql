@@ -6,4 +6,40 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+DROP VIEW IF EXISTS standing;
+DROP TABLE IF EXISTS match, player;
+
+
+CREATE TABLE player
+(
+	player_id SERIAL PRIMARY KEY,
+	name varchar(64)
+);
+
+CREATE TABLE match
+(
+	match_id SERIAL PRIMARY KEY, 
+	winner integer references player(player_id),
+	loser integer references player(player_id)
+);
+
+CREATE VIEW standing AS
+(
+    select 
+        p.player_id, 
+        p.name, 
+        count(m.winner) as win,
+        (select count(*)
+            from match m2
+            where p.player_id = m2.winner or p.player_id = m2.loser
+            )  as total
+    from 
+        player p 
+        left join match m 
+        on p.player_id = m.winner 
+    group by 
+        p.player_id, 
+        p.name 
+    order by win desc, p.player_id asc
+);
 

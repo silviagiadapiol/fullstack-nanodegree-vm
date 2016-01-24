@@ -13,15 +13,28 @@ def connect():
 
 def deleteMatches():
     """Remove all the match records from the database."""
-
+    DB = connect()
+    c=DB.cursor()
+    c.execute("DELETE FROM match")
+    DB.commit()
+    DB.close()
 
 def deletePlayers():
     """Remove all the player records from the database."""
-
+    DB = connect()
+    c=DB.cursor()
+    c.execute("DELETE FROM player")
+    DB.commit()
+    DB.close()
 
 def countPlayers():
     """Returns the number of players currently registered."""
-
+    DB = connect()
+    c=DB.cursor()
+    c.execute("SELECT count (*) as num FROM player")
+    count = c.fetchall()[0][0]
+    DB.close()
+    return count
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
@@ -32,7 +45,11 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-
+    DB = connect()
+    c=DB.cursor()
+    c.execute("INSERT INTO player (name) VALUES (%s)", (name,))
+    DB.commit()
+    DB.close()
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
@@ -47,6 +64,23 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    DB = connect()
+    c=DB.cursor()
+    c.execute(
+"""
+    select 
+        player_id,
+        name,
+        win,
+        total
+    from
+        standing s;   
+""")
+    standing = []
+    for row in c.fetchall():
+        standing.append( (str(row[0]),str(row[1]),int(row[2]),int(row[3])) )
+    DB.close()
+    return standing
 
 
 def reportMatch(winner, loser):
@@ -56,6 +90,12 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    DB = connect()
+    c=DB.cursor()
+    c.execute("INSERT INTO match (winner, loser) VALUES (%s, %s)", (winner, loser,))
+    DB.commit()
+    DB.close()
+
  
  
 def swissPairings():
@@ -73,5 +113,13 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-
-
+    DB = connect()
+    c=DB.cursor()
+    c.execute("SELECT player_id, name, win from standing")
+    pairing = []
+    resultFromDB=c.fetchall()
+    for i in range(0, len(resultFromDB),2):
+        element1 = resultFromDB[i]
+        element2 = resultFromDB[i+1]
+        pairing.append( (str(element1[0]), str(element1[1]),str(element2[0]), str(element2[1])))
+    return pairing
