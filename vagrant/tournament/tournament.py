@@ -78,7 +78,7 @@ def playerStandings():
 """)
     standing = []
     for row in c.fetchall():
-        standing.append( (str(row[0]),str(row[1]),int(row[2]),int(row[3])) )
+        standing.append( (int(row[0]),str(row[1]),int(row[2]),int(row[3])) )
     DB.close()
     return standing
 
@@ -115,11 +115,11 @@ def swissPairings():
     """
     DB = connect()
     c=DB.cursor()
-    c.execute("SELECT player_id, name, win from standing")
+    c.execute("SELECT player_id, name from standing")
     pairing = []
     resultFromDB=c.fetchall()
     for i in range(0, len(resultFromDB),2):
         element1 = resultFromDB[i]
         element2 = resultFromDB[i+1]
-        pairing.append( (str(element1[0]), str(element1[1]),str(element2[0]), str(element2[1])))
+        pairing.append( (int(element1[0]), str(element1[1]),int(element2[0]), str(element2[1])))
     return pairing
