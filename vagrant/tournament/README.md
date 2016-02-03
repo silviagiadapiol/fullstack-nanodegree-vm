@@ -15,6 +15,7 @@ tournament.py is a Python file with a set of functions that allows the user to p
 In Silvia Giada Piol GitHub fullstack-nanodegree-vm repository, inside vagrant/[tournament, ](https://github.com/silviagiadapiol/fullstack-nanodegree-vm/tree/master/vagrant/tournament)  you can find the following files:
 * tournament.sql _(it creates the swiss tournament database and its tables and view as sql statements)_
 * tournament.py _(it gives the definitions of the functions that allows the user to interact with the tournament database)_
+* db.py _(it gives the definitions of the class that allows to connect to the database, to execute querys, to commit and to close the connection)_
 * tournament_test.py _(it tests all the functions defined in tournament. py)_
 
 
